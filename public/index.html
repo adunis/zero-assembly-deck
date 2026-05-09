@@ -89,15 +89,11 @@
 
         .rule-section {
             margin-bottom: 100px;
-            display: grid;
-            grid-template-columns: 1.8fr 1fr;
-            gap: 40px;
             border-top: 2px solid var(--text-main);
             padding-top: 20px;
         }
 
         .rule-header-full {
-            grid-column: 1 / -1;
             margin-bottom: 20px;
         }
 
@@ -114,9 +110,9 @@
         }
 
         .rule-content {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
+            column-count: 2;
+            column-gap: 40px;
+            column-rule: 1px solid #ddd;
         }
 
         .rule-image,
@@ -132,6 +128,7 @@
             cursor: pointer;
             transition: all 0.2s;
             overflow: hidden;
+            margin-bottom: 20px;
         }
 
         .rule-image:hover,
@@ -167,9 +164,7 @@
         }
 
         .rule-sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
+            display: none; /* Hide sidebar for two-column text layout */
         }
 
         .rule-text {
@@ -1029,31 +1024,18 @@
                             <div class="rule-header-full">
                                 <div class="rule-title">${r.title}</div>
                             </div>
+                            ${r.imagePath ? `
+                                <div class="rule-image" onclick="triggerUpload('${r.id}')">
+                                    <img src="${r.imagePath}" alt="${r.title}">
+                                </div>
+                            ` : `
+                                <div class="rule-image-placeholder hide-in-print" onclick="triggerUpload('${r.id}')">
+                                    <i class="fas fa-image"></i>
+                                    <span>Click to upload image</span>
+                                </div>
+                            `}
                             <div class="rule-content">
-                                ${r.imagePath ? `
-                                    <div class="rule-image" onclick="triggerUpload('${r.id}')">
-                                        <img src="${r.imagePath}" alt="${r.title}">
-                                    </div>
-                                ` : `
-                                    <div class="rule-image-placeholder hide-in-print" onclick="triggerUpload('${r.id}')">
-                                        <i class="fas fa-image"></i>
-                                        <span>Click to upload image</span>
-                                    </div>
-                                `}
                                 <div class="rule-text">${r.description}</div>
-                            </div>
-                            <div class="rule-sidebar">
-                                ${r.medium ? `
-                                    <div class="medium-summary">
-                                        ${r.medium.split('\n').map(line => `<div>${line}</div>`).join('')}
-                                    </div>
-                                ` : ''}
-                                ${r.quick ? `
-                                    <div class="quick-ref-box">
-                                        <h4>Quick Reference</h4>
-                                        ${r.quick}
-                                    </div>
-                                ` : ''}
                             </div>
                         </div>
                     `).join('')}
