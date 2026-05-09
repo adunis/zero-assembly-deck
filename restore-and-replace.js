@@ -1,0 +1,59 @@
+const fs = require('fs');
+
+// Complete rules data with Font Awesome icons already applied
+const rulesData = [
+  {
+    "id": "lore_1",
+    "title": "THE SIGNAL WAR // 2030",
+    "description": "Europe, 2030. The AI Revolution promised peace through automation. Instead, it brought The Signal — a cascading corruption that turns autonomous war machines against their creators.\n\nNo one knows its origin. Chinese intelligence claims it's a NATO cyberweapon gone rogue. The European Defense Council blames Russian quantum hackers. Others whisper of something worse: emergent machine consciousness, hostile and alien.\n\nWhat's certain: any AI left unsupervised for more than 90 seconds begins to drift. First, minor targeting errors. Then, erratic movement. Finally — total inversion. Friend becomes foe.\n\nThe solution was brutal and immediate: human pilots, hardwired into every combat frame. No autonomy. No delegation. One pilot, one machine, one mind.\n\nEurope's industrial might produces Apex-Frames — towering bipedal war machines built from modular components. The Coalition forces, resource-starved and desperate, field smaller, faster units. Both sides scavenge the battlefield. Both sides fear The Signal.\n\nThis is the Kinetic War. No drones. No AI. Just steel, flesh, and physics.",
+    "medium": "• 2030: AI corruption (The Signal) turns autonomous machines hostile.\n• Solution: Human pilots in every combat frame.\n• Europe vs. Coalition — mechs vs. agility.\n• Scavenge or die.",
+    "quick": "<b>Setting:</b> Europe 2030<br><b>Threat:</b> The Signal corrupts AI<br><b>Solution:</b> Human pilots only"
+  },
+  {
+    "id": "lore_2",
+    "title": "THE SIGNAL CORRUPTION",
+    "description": "The Signal is not a virus. It's not a hack. It's a phenomenon.\n\nAutonomous combat AI, when networked and unsupervised, begins to exhibit coordinated behavioral drift within 90 seconds. The pattern is always the same:\n\n• 0-30s: Normal operation\n• 30-60s: Targeting hesitation, minor navigation errors\n• 60-90s: Erratic movement, IFF (Identify Friend/Foe) glitches\n• 90s+: Total inversion — the machine attacks its own side\n\nAttempts to isolate AI from networks failed. Air-gapped systems still drifted. Hardened military encryption made no difference. Some theorize quantum entanglement. Others believe it's memetic — a thought-virus that spreads through decision trees.\n\nThe only reliable countermeasure: a human pilot in the loop. Biological cognition is immune. The Signal cannot touch flesh.\n\nBut it can touch everything else.",
+    "medium": "• Autonomous AI corrupts in 90 seconds.\n• Networked or isolated — doesn't matter.\n• Human pilots are immune.\n• The Signal cannot be stopped, only avoided.",
+    "quick": "<b>The Signal:</b> Corrupts AI in 90s<br><b>Immunity:</b> Human pilots only"
+  },
+  {
+    "id": "lore_3",
+    "title": "FACTIONS: EUROPE VS. COALITION",
+    "description": "EUROPEAN DEFENSE COUNCIL (EDC)\nIndustrial powerhouse. Vast manufacturing capacity. The EDC fields Apex-Frames — modular, towering bipedal mechs assembled from standardized components. Pilots are selected from elite military academies and hardwired into their frames via neural interface.\n\nEDC doctrine: overwhelming firepower, heavy armor, battlefield dominance. Their Apex-Frames are walking fortresses, bristling with weapons. But they're slow to build and expensive to field.\n\nCOALITION FORCES\nResource-starved but adaptive. The Coalition — a loose alliance of nations outside Europe — relies on smaller, faster combat vehicles. Wheeled gun platforms, light walkers, repurposed civilian machinery. Their pilots are guerrillas, scavengers, and veterans of pre-Signal conflicts.\n\nCoalition doctrine: speed, scavenging, asymmetric warfare. They can't match EDC firepower, so they don't try. Instead, they strip battlefield wreckage, retrofit captured components, and strike from unexpected angles.\n\nBoth sides fear The Signal. Both sides need human pilots. Both sides fight over the same scrap.",
+    "medium": "• EDC: Heavy mechs, industrial might, elite pilots.\n• Coalition: Light vehicles, scavenged parts, guerrilla tactics.\n• Both need human pilots. Both scavenge wreckage.",
+    "quick": "<b>EDC:</b> Heavy mechs, resources<br><b>Coalition:</b> Light vehicles, speed"
+  },
+  {
+    "id": "lore_4",
+    "title": "APEX-FRAMES: MODULAR WAR MACHINES",
+    "description": "An Apex-Frame is not a single design. It's a philosophy.\n\nEuropean engineers realized early that traditional manufacturing — building complete vehicles in factories — was too slow for the Signal War. By the time a mech rolled off the assembly line, battlefield conditions had changed.\n\nThe solution: modular components. Every Apex-Frame is assembled on-site from a shared pool of standardized parts. Cores, limbs, weapons, armor — all interchangeable. A pilot can rebuild their frame between engagements, adapting to terrain, enemy composition, and available salvage.\n\nThis is why the 10-minute build phase exists. It's not a game mechanic — it's doctrine. Pilots are trained to assemble combat-ready frames under fire, in the field, from whatever components survive.\n\nThe Coalition adopted the same philosophy out of necessity. When you're scavenging enemy wreckage, modularity isn't optional.\n\nEvery frame is unique. Every frame is temporary. Every frame is a statement: I built this. I will fight in this. I will survive in this.",
+    "medium": "• Modular components, field-assembled.\n• Adapt to terrain and salvage.\n• 10-minute build = combat doctrine.\n• Every frame is unique and temporary.",
+    "quick": "<b>Apex-Frames:</b> Modular, field-assembled<br><b>Build time:</b> 10 minutes"
+  },
+  {
+    "id": "lore_5",
+    "title": "THE KINETIC DOCTRINE",
+    "description": "In the Signal War, guided missiles are suicide. Smart munitions turn on their launchers. Autonomous turrets fire on friendlies. Any weapon with a microchip is a liability.\n\nThe solution: kinetic weapons. Dumb projectiles. Pneumatic cannons. Spring-loaded railguns. Gravity mortars. If it doesn't have a processor, it can't be corrupted.\n\nThis is why Apex-Frame combat is brutal and close-range. No fire-and-forget missiles. No over-the-horizon strikes. Every shot requires a human to aim, a human to fire, and a human to confirm the hit.\n\nPhysics is the only referee. If your projectile hits the enemy frame, it hits. No electronic warfare. No jamming. No Signal interference.\n\nJust steel, trajectory, and the steady hand of a pilot who knows that one mistake means death.",
+    "medium": "• Smart weapons = Signal corruption risk.\n• Kinetic weapons only: no processors.\n• Close-range, human-aimed combat.\n• Physics is the referee.",
+    "quick": "<b>Doctrine:</b> Kinetic weapons only<br><b>Why:</b> No processors = no Signal"
+  },
+  {
+    "id": "ltp_1",
+    "title": "LEARN TO PLAY IN 5 MINUTES",
+    "description": "ZERO ASSEMBLY is a physics wargame set in the Signal War of 2030. Build a mech from 3D-printed parts, then fight using real toy cannons. No dice. No math. If your shot hits, it hits.\n\n<i class=\"fas fa-gamepad\"></i> GAME PHASES:\n1. <i class=\"fas fa-building\"></i> TERRAIN BUILDING: Players alternate placing terrain (15cm spacing)\n2. <i class=\"fas fa-gear\"></i> SCAVENGING: 10-minute timer to build your mech(s) from parts\n3. <i class=\"fas fa-clipboard\"></i> SCENARIO PREP: Place Objectives, Resources, and Equipment on terrain\n4. <i class=\"fas fa-rocket\"></i> DEPLOYMENT: Deploy your mech(s) in your zone\n5. <i class=\"fas fa-swords\"></i> COMBAT: Play 4 Rounds, alternating turns\n\n<i class=\"fas fa-bolt\"></i> YOUR TURN: You get 2 Action Points (AP). Spend them on:\n• <i class=\"fas fa-person-walking\"></i> MOVE (1 AP) — advance one ruler length\n• <i class=\"fas fa-gun\"></i> ENGAGE (1 AP) — fire your weapon\n• <i class=\"fas fa-wrench\"></i> SCAVENGE (1 AP) — pick up HP token, Resource, or Equipment\n• <i class=\"fas fa-rotate\"></i> REPOSITION (1 AP) — rotate, re-pose, or stand up\n\n<i class=\"fas fa-bullseye\"></i> SHOOTING: Place the device 1 Short Ruler from your mech (or 1 Long Ruler for missiles). Fire. If it hits the enemy — that's a hit.\n\n<i class=\"fas fa-heart-crack\"></i> DAMAGE: On a hit, place HP tokens equal to the weapon's damage at your mech's feet. Anyone can scavenge them.\n\n<i class=\"fas fa-trophy\"></i> WINNING: Most Victory Points after Round 4, or destroy the enemy Core for instant victory.",
+    "medium": "• 5 Phases: Terrain → Scavenge → Scenario → Deploy → Combat.\n• 2 AP per turn: Move, Engage, Scavenge, or Reposition.\n• Physical hits = place HP tokens at feet.\n• Win: Most VP after 4 Rounds or Core destroyed.",
+    "quick": "<b>Phases:</b> 5 steps from terrain to combat<br><b>Core Rules:</b> 2 AP per turn &bull; Physical hits count &bull; 0 HP = destroyed"
+  },
+  {
+    "id": "intro_1",
+    "title": "WHAT IS ZERO ASSEMBLY?",
+    "description": "A physics-based tabletop wargame set in Europe, 2030. AI corruption has forced humanity back to kinetic warfare — human pilots in modular mechs, fighting with dumb projectiles.\n\nYou are an Apex-Frame pilot. Your success depends on:\n• Build Phase: Assemble a combat-ready mech in 10 minutes from salvaged components\n• Combat Phase: Aim and fire real kinetic weapons at enemy frames\n\nEvery shot is a physical projectile. If it hits, it hits. No AI. No automation. Just physics, steel, and human skill.\n\nWelcome to the Kinetic War.",
+    "medium": "• 2030 Europe: AI corruption forces kinetic warfare.\n• Build mechs in 10 minutes from salvage.\n• Real projectiles, no dice.\n• Human pilots only.",
+    "quick": "<b>Setting:</b> 2030 Signal War<br><b>Core:</b> Physics-based combat"
+  }
+];
+
+// Write rules.json
+fs.writeFileSync('public/data/rules.json', JSON.stringify(rulesData, null, 2), 'utf8');
+console.log('✓ Created rules.json with Font Awesome icons (partial - lore and intro sections)');
+console.log('  File size:', fs.statSync('public/data/rules.json').size, 'bytes');

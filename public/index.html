@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZERO ASSEMBLY // CARD DECK GENERATOR</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --card-bg: #fdfdfd;
+            --accent-neon: #222222;
+            --accent-orange: #d32f2f;
+            --text-main: #1a1a1a;
+            --border-dim: #cccccc;
+            --font-mono: 'JetBrains Mono', monospace;
+            --font-serif: 'Georgia', serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: var(--font-serif);
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            line-height: 1.6;
+        }
+
+        header {
+            width: 100%;
+            max-width: 1000px;
+            border-bottom: 4px solid var(--text-main);
+            margin-bottom: 50px;
+            padding-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 3rem;
+            letter-spacing: -1px;
+            text-transform: uppercase;
+            font-family: var(--font-mono);
+            font-weight: 700;
+            border-bottom: 2px solid var(--accent-orange);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .tab-btn {
+            background: white;
+            border: 2px solid var(--text-main);
+            color: var(--text-main);
+            padding: 10px 25px;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            font-family: var(--font-mono);
+            font-weight: 700;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background: var(--text-main);
+            color: white;
+        }
+
+        .rulebook-container {
+            width: 100%;
+            max-width: 900px;
+            background-color: white;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .rule-section {
+            margin-bottom: 100px;
+            display: grid;
+            grid-template-columns: 1.8fr 1fr;
+            gap: 40px;
+            border-top: 2px solid var(--text-main);
+            padding-top: 20px;
+        }
+
+        .rule-header-full {
+            grid-column: 1 / -1;
+            margin-bottom: 20px;
+        }
+
+        .rule-title {
+            color: var(--text-main);
+            font-size: 1.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-family: var(--font-mono);
+            background-color: var(--text-main);
+            color: white;
+            padding: 5px 15px;
+            display: inline-block;
+        }
+
+        .rule-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .rule-image,
+        .rule-image-placeholder {
+            width: 100%;
+            max-width: 600px;
+            height: 300px;
+            background-color: #f0f0f0;
+            border: 2px dashed var(--border-dim);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            overflow: hidden;
+        }
+
+        .rule-image:hover,
+        .rule-image-placeholder:hover {
+            border-color: var(--accent-orange);
+            background-color: #fafafa;
+        }
+
+        .rule-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .rule-image-placeholder {
+            flex-direction: column;
+            gap: 10px;
+            color: #999;
+        }
+
+        .rule-image-placeholder i {
+            font-size: 3rem;
+            color: #ccc;
+        }
+
+        .rule-image-placeholder span {
+            font-size: 0.9rem;
+            font-family: var(--font-mono);
+        }
+
+        .rule-image-placeholder:hover i {
+            color: var(--accent-orange);
+        }
+
+        .rule-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .rule-text {
+            color: var(--text-main);
+            font-size: 1.05rem;
+            text-align: justify;
+            white-space: pre-line;
+            line-height: 1.8;
+        }
+
+        /* Better formatting for lists */
+        .rule-text b {
+            color: var(--accent-orange);
+            font-weight: 700;
+        }
+
+        .rule-text i.fas {
+            color: var(--accent-orange);
+            margin-right: 6px;
+        }
+
+        /* Improve spacing */
+        .rule-text br + • {
+            margin-left: 20px;
+        }
+
+        /* Medium Depth: Tactical Summary */
+        .medium-summary {
+            background-color: #f0f0f0;
+            padding: 20px;
+            border-right: 4px solid var(--accent-orange);
+            font-size: 0.95rem;
+            font-family: var(--font-serif);
+            font-style: italic;
+        }
+
+        .medium-summary::before {
+            content: 'TACTICAL SUMMARY';
+            display: block;
+            font-size: 0.7rem;
+            font-family: var(--font-mono);
+            color: #777;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        /* Quick Depth: Reference Box */
+        .quick-ref-box {
+            background-color: var(--text-main);
+            color: white;
+            padding: 20px;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+        }
+
+        .quick-ref-box h4 {
+            margin: 0 0 12px 0;
+            color: var(--accent-orange);
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            border-bottom: 1px solid #444;
+            padding-bottom: 5px;
+        }
+
+        .quick-ref-box table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .quick-ref-box td, .quick-ref-box th {
+            padding: 4px 2px;
+            border-bottom: 1px solid #333;
+            text-align: left;
+        }
+
+        .quick-ref-box th {
+            color: #666;
+            font-size: 0.6rem;
+            text-transform: uppercase;
+        }
+
+        /* Device Upload Section Styles */
+        .device-upload-section {
+            margin-bottom: 60px;
+            border: 2px solid var(--text-main);
+            padding: 30px;
+            background: white;
+        }
+
+        .device-upload-header {
+            font-size: 1.8rem;
+            font-family: var(--font-mono);
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-main);
+            margin-bottom: 20px;
+            border-bottom: 3px solid var(--accent-orange);
+            padding-bottom: 10px;
+        }
+
+        .device-specs-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .device-spec-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .device-spec-label {
+            font-size: 0.75rem;
+            font-family: var(--font-mono);
+            color: var(--accent-orange);
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .device-spec-value {
+            font-size: 1rem;
+            color: var(--text-main);
+        }
+
+        .device-images-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .device-image-upload {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .device-image-label {
+            font-size: 0.85rem;
+            font-family: var(--font-mono);
+            font-weight: 700;
+            color: var(--text-main);
+            text-transform: uppercase;
+        }
+
+        .device-image-box {
+            width: 100%;
+            height: 300px;
+            background-color: #f0f0f0;
+            border: 3px dashed var(--border-dim);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .device-image-box:hover {
+            border-color: var(--accent-orange);
+            background-color: #fafafa;
+        }
+
+        .device-image-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .device-image-placeholder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            color: #999;
+        }
+
+        .device-image-placeholder i {
+            font-size: 4rem;
+            color: #ccc;
+        }
+
+        .device-image-placeholder span {
+            font-size: 0.9rem;
+            font-family: var(--font-mono);
+        }
+
+        .device-image-box:hover .device-image-placeholder i {
+            color: var(--accent-orange);
+        }
+
+        .ammo-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .ammo-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 10px;
+            background: #f9f9f9;
+            border-left: 3px solid var(--accent-orange);
+        }
+
+        .ammo-image-small {
+            width: 60px;
+            height: 60px;
+            background: #e0e0e0;
+            border: 2px dashed #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .ammo-image-small:hover {
+            border-color: var(--accent-orange);
+        }
+
+        .ammo-image-small img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .ammo-image-small i {
+            font-size: 1.5rem;
+            color: #999;
+        }
+
+        .ammo-name {
+            font-size: 0.85rem;
+            font-family: var(--font-mono);
+            color: var(--text-main);
+            flex-grow: 1;
+        }
+
+        .rule-category-header {
+            font-size: 2.8rem;
+            color: var(--accent-orange);
+            text-transform: uppercase;
+            margin-top: 120px;
+            margin-bottom: 40px;
+            font-family: var(--font-mono);
+            font-weight: 700;
+            border-left: 15px solid var(--accent-orange);
+            padding-left: 20px;
+        }
+
+        /* Deck Container Grid Layout */
+        .deck-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        /* Playing Card Styles */
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-dim);
+            height: 550px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            padding: 15px;
+            box-sizing: border-box;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .card:hover {
+            transform: scale(1.02);
+            border-color: var(--accent-neon);
+        }
+
+        .card-header {
+            border-bottom: 1px solid var(--border-dim);
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .card-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--accent-neon);
+            text-transform: uppercase;
+        }
+
+        .card-cost {
+            font-size: 0.7rem;
+            color: var(--accent-orange);
+        }
+
+        .card-stats {
+            display: flex;
+            gap: 10px;
+            justify-content: space-between;
+            background: #1a1a1a;
+            padding: 8px 12px;
+            border-left: 3px solid var(--accent-orange);
+        }
+
+        .stat-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+        }
+
+        .stat-label {
+            font-size: 0.6rem;
+            color: #888;
+            text-transform: uppercase;
+            font-family: var(--font-mono);
+            margin-bottom: 2px;
+        }
+
+        .stat-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--accent-orange);
+            font-family: var(--font-mono);
+            line-height: 1;
+        }
+
+        .stat-value.damage {
+            color: #ff4444;
+        }
+
+        .stat-value.proxy {
+            color: #44aaff;
+        }
+
+        .card-image {
+            width: 100%;
+            height: 180px;
+            background-color: #1f2228;
+            margin-bottom: 12px;
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 1px solid var(--border-dim);
+            flex-shrink: 0;
+        }
+
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .card-image::after {
+            content: '[ UPLOAD ]';
+            position: absolute;
+            font-size: 0.6rem;
+            color: rgba(255,255,255,0.3);
+        }
+
+        .card-image:hover::after {
+            color: var(--accent-neon);
+        }
+
+        .card-body {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+
+        .card-body::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .card-body::-webkit-scrollbar-thumb {
+            background: var(--border-dim);
+            border-radius: 2px;
+        }
+
+        .card-body::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-neon);
+        }
+
+        .card-meta {
+            font-size: 0.65rem;
+            color: #777;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            flex-shrink: 0;
+        }
+
+        .card-description {
+            font-size: 0.8rem;
+            line-height: 1.5;
+            color: #bbb;
+            text-align: justify;
+        }
+
+        .card-stats-bottom {
+            background: #1a1a1a;
+            color: var(--accent-orange);
+            padding: 10px 12px;
+            border-top: 2px solid var(--accent-orange);
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-align: center;
+            text-transform: uppercase;
+            margin-top: auto;
+            flex-shrink: 0;
+        }
+
+        .hidden { display: none !important; }
+
+        input[type="file"] { display: none; }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            width: 10px;
+            height: 10px;
+            border-top: 1px solid var(--accent-neon);
+            border-left: 1px solid var(--accent-neon);
+        }
+
+        .print-btn {
+            background: var(--accent-orange);
+            color: black;
+            border: none;
+            padding: 8px 20px;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            font-family: var(--font-mono);
+            font-weight: bold;
+            transition: all 0.2s;
+            margin-right: 20px;
+        }
+
+        .print-btn:hover {
+            background: white;
+            box-shadow: 0 0 10px var(--accent-orange);
+        }
+
+        /* PRINT STYLES - COMPACT FOR FEWER PAGES */
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                font-size: 8pt !important;
+                line-height: 1.2 !important;
+            }
+
+            @page {
+                size: A4;
+                margin: 8mm; /* Reduced margin */
+            }
+
+            header, .tabs, .tab-btn {
+                display: none !important;
+            }
+
+            /* --- FORCE ALL TABS TO PRINT (OVERRIDES .hidden) --- */
+            #rulesDeck:not(.hidden) {
+                display: block !important;
+            }
+            
+            #equipmentDeck:not(.hidden) {
+                display: grid !important;
+            }
+
+            #devicesDeck:not(.hidden) {
+                display: block !important;
+            }
+
+            /* HIDE TABS THAT ARE HIDDEN */
+            #rulesDeck.hidden,
+            #equipmentDeck.hidden,
+            #devicesDeck.hidden {
+                display: none !important;
+            }
+
+            /* HIDE EMPTY PLACEHOLDERS IN PRINT */
+            .hide-in-print {
+                display: none !important;
+            }
+
+            .card-image::after {
+                content: none !important;
+                display: none !important;
+            }
+
+            /* --- RULEBOOK COMPACT --- */
+            .rulebook-container {
+                background: white !important;
+                padding: 0 !important;
+                max-width: none !important;
+                column-count: 2 !important;
+                column-gap: 8mm !important;
+                column-rule: 1px solid #ddd !important;
+            }
+
+            .rule-category-header {
+                color: black !important;
+                font-size: 14pt !important;
+                border-left: 6px solid black !important;
+                margin-top: 0 !important;
+                margin-bottom: 3mm !important;
+                padding-top: 4mm !important;
+                padding-left: 3mm !important;
+                page-break-before: auto;
+                page-break-after: avoid !important;
+                break-after: avoid !important;
+                column-span: all !important;
+            }
+
+            .rule-category-header:first-of-type {
+                page-break-before: avoid !important;
+                padding-top: 0 !important;
+            }
+
+            .rule-section {
+                display: block !important;
+                border-top: none !important;
+                border-left: 2px solid #333 !important;
+                margin-bottom: 4mm !important;
+                padding-left: 3mm !important;
+                padding-top: 0 !important;
+                page-break-inside: auto !important;
+                break-inside: auto !important;
+                column-break-inside: avoid !important;
+            }
+
+            .rule-header-full {
+                margin-bottom: 1.5mm !important;
+                page-break-after: avoid !important;
+                break-after: avoid !important;
+            }
+
+            .rule-title {
+                color: black !important;
+                background: none !important;
+                padding: 0 !important;
+                font-size: 10pt !important;
+                margin-bottom: 1.5mm !important;
+                page-break-after: avoid !important;
+                font-weight: bold;
+                border-bottom: 1.5px solid #333;
+                display: block;
+                padding-bottom: 1mm !important;
+            }
+
+            .rule-content, .rule-sidebar {
+                display: block !important;
+                margin-top: 2mm !important;
+            }
+
+            .rule-text {
+                color: black !important;
+                font-size: 8pt !important;
+                line-height: 1.25 !important;
+                margin-bottom: 2mm !important;
+            }
+
+            /* Better list formatting in print */
+            .rule-text b {
+                font-weight: bold;
+                color: black !important;
+            }
+
+            .rule-text i.fas {
+                display: none !important; /* Hide icons in print */
+            }
+
+            .rule-text hr {
+                margin: 2mm 0 !important;
+                border: none !important;
+                border-top: 1px solid #ddd !important;
+            }
+
+            /* Keep components together */
+            .rule-image {
+                max-width: 100% !important;
+                max-height: 50mm !important;
+                border: 1px solid #ccc !important;
+                margin-bottom: 3mm !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+                column-break-inside: avoid !important;
+            }
+
+            .medium-summary, 
+            .quick-ref-box {
+                display: none !important;
+            }
+
+            .medium-summary {
+                background: #f5f5f5 !important;
+            }
+
+            .quick-ref-box {
+                background: #e8e8e8 !important;
+                font-family: monospace !important;
+            }
+
+            .quick-ref-box h4 {
+                margin: 0 0 1mm 0 !important;
+                font-size: 7pt !important;
+            }
+
+            /* --- CARDS DECK COMPACT (9 cards per A4 page) --- */
+            .deck-container {
+                /* Standard Poker Size: 63mm x 88mm. Fits 3x3 on A4 */
+                grid-template-columns: repeat(3, 63mm) !important;
+                gap: 4mm !important;
+                width: 100% !important;
+                max-width: none !important;
+                background: white !important;
+                justify-content: center !important;
+            }
+
+            .card {
+                background: white !important;
+                color: black !important;
+                border: 1.5px solid black !important;
+                box-shadow: none !important;
+                height: 88mm !important; 
+                width: 63mm !important;
+                padding: 2mm !important;
+                margin: 0 !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+                display: flex;
+                flex-direction: column;
+                font-size: 6.5pt !important;
+            }
+
+            .card-header {
+                border-bottom: 1px solid black !important;
+                margin-bottom: 1.5mm !important;
+                padding-bottom: 1mm !important;
+                gap: 1mm !important;
+            }
+
+            .card-title, .card-cost, .card-meta, .card-description {
+                color: black !important;
+            }
+
+            .card-title { 
+                font-size: 6.5pt !important;
+                font-weight: bold !important;
+                line-height: 1.1 !important;
+            }
+            
+            .card-cost { 
+                font-size: 5.5pt !important; 
+            }
+
+            .card-stats {
+                background: #f0f0f0 !important;
+                border-left: 2px solid black !important;
+                padding: 1.5mm !important;
+                margin-bottom: 1.5mm !important;
+            }
+
+            .stat-label {
+                font-size: 5pt !important;
+                color: #666 !important;
+            }
+
+            .stat-value {
+                font-size: 10pt !important;
+                color: black !important;
+                font-weight: bold !important;
+            }
+            
+            .card-image {
+                border: 1px solid #ccc !important;
+                background: #f8f8f8 !important;
+                height: 28mm !important;
+                margin-bottom: 1.5mm !important;
+            }
+
+            .card-body {
+                overflow: visible !important;
+                padding-right: 0 !important;
+                flex-grow: 1 !important;
+            }
+
+            .card-meta { 
+                font-size: 5pt !important; 
+                margin-bottom: 1mm !important;
+                color: #666 !important;
+            }
+            
+            .card-description { 
+                font-size: 6pt !important; 
+                line-height: 1.15 !important;
+            }
+
+            .card-stats-bottom {
+                background: #f0f0f0 !important;
+                color: black !important;
+                border-top: 1.5px solid black !important;
+                padding: 1.5mm !important;
+                font-size: 5.5pt !important;
+                margin-top: auto !important;
+                line-height: 1.1 !important;
+            }
+
+            /* --- DEVICES COMPACT --- */
+            .device-upload-section {
+                padding: 3mm !important;
+                margin-bottom: 5mm !important;
+                border: 1.5px solid black !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+
+            .device-upload-header {
+                font-size: 12pt !important;
+                margin-bottom: 2mm !important;
+                padding-bottom: 1.5mm !important;
+                border-bottom: 2px solid black !important;
+                page-break-after: avoid !important;
+            }
+
+            .device-specs-grid {
+                margin-bottom: 2mm !important;
+                gap: 2mm !important;
+            }
+
+            .device-spec-label { 
+                font-size: 7pt !important; 
+                color: #666 !important;
+                font-weight: bold !important;
+            }
+            
+            .device-spec-value { 
+                font-size: 8pt !important;
+            }
+
+            .device-images-grid { 
+                gap: 2mm !important; 
+                margin-top: 2mm !important; 
+            }
+            
+            .device-image-box {
+                height: 70mm !important;
+                border: 1px solid #ccc !important;
+            }
+            
+            .device-image-label { 
+                font-size: 7pt !important;
+                font-weight: bold !important;
+            }
+
+            .ammo-list {
+                gap: 2mm !important;
+            }
+
+            .ammo-item {
+                padding: 1.5mm !important;
+                border-left: 2px solid #333 !important;
+            }
+
+            .ammo-name {
+                font-size: 7pt !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Zero Assembly // Deck Gen</h1>
+        <div class="tabs">
+            <button class="print-btn" onclick="window.print()">[ PRINT DECK ]</button>
+            <button class="tab-btn active" onclick="switchTab('rules')">Rule Deck</button>
+            <button class="tab-btn" onclick="switchTab('equipment')">Equipment Deck</button>
+            <button class="tab-btn" onclick="switchTab('devices')">Devices & Ammo</button>
+        </div>
+    </header>
+
+    <div id="rulesDeck" class="rulebook-container"></div>
+    <div id="equipmentDeck" class="deck-container hidden"></div>
+    <div id="devicesDeck" class="rulebook-container hidden"></div>
+
+    <input type="file" id="uploadTrigger" accept="image/*">
+
+    <script>
+        let activeUploadTarget = null;
+
+        async function loadDecks() {
+            const rulesRes = await fetch('/data/rules.json');
+            const rules = await rulesRes.json();
+            renderRules(rules);
+
+            const equipRes = await fetch('/data/equipment.json');
+            const equip = await equipRes.json();
+            renderEquipment(equip);
+
+            try {
+                const devicesRes = await fetch('/data/devices.json');
+                const devices = await devicesRes.json();
+                renderDevices(devices, equip);
+            } catch (e) {
+                console.log('devices.json not found, skipping devices tab');
+            }
+        }
+
+        function renderRules(rules) {
+            const container = document.getElementById('rulesDeck');
+            
+            const categories = [
+                { title: 'Quick Reference', prefix: 'glossary_' },
+                { title: 'The Signal War // Lore', prefix: 'lore_' },
+                { title: 'Introduction & Setup', prefix: 'intro_' },
+                { title: 'Game Phases', prefix: 'phase_' },
+                { title: 'Core Mechanics', prefix: 'rule_' },
+                { title: 'Combat Scenarios', prefix: 'scen_' }
+            ];
+
+            container.innerHTML = categories.map(cat => {
+                const catRules = rules.filter(r => r.id.startsWith(cat.prefix) || (cat.prefix === 'intro_' && r.id === 'ltp_1'));
+                if (catRules.length === 0) return '';
+
+                return `
+                    <div class="rule-category-header">${cat.title}</div>
+                    ${catRules.map(r => `
+                        <div class="rule-section">
+                            <div class="rule-header-full">
+                                <div class="rule-title">${r.title}</div>
+                            </div>
+                            <div class="rule-content">
+                                ${r.imagePath ? `
+                                    <div class="rule-image" onclick="triggerUpload('${r.id}')">
+                                        <img src="${r.imagePath}" alt="${r.title}">
+                                    </div>
+                                ` : `
+                                    <div class="rule-image-placeholder hide-in-print" onclick="triggerUpload('${r.id}')">
+                                        <i class="fas fa-image"></i>
+                                        <span>Click to upload image</span>
+                                    </div>
+                                `}
+                                <div class="rule-text">${r.description}</div>
+                            </div>
+                            <div class="rule-sidebar">
+                                ${r.medium ? `
+                                    <div class="medium-summary">
+                                        ${r.medium.split('\n').map(line => `<div>${line}</div>`).join('')}
+                                    </div>
+                                ` : ''}
+                                ${r.quick ? `
+                                    <div class="quick-ref-box">
+                                        <h4>Quick Reference</h4>
+                                        ${r.quick}
+                                    </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    `).join('')}
+                `;
+            }).join('');
+        }
+
+        const countryFlags = {
+            'EU': '🇪🇺', 'JP': '🇯🇵', 'KR': '🇰🇷', 'CN': '🇨🇳', 'SG': '🇸🇬', 'IN': '🇮🇳',
+            'TW': '🇹🇼', 'TH': '🇹🇭', 'PK': '🇵🇰', 'MY': '🇲🇾', 'ID': '🇮🇩', 'US': '🇺🇸', 
+            'CA': '🇨🇦', 'BR': '🇧🇷', 'MX': '🇲🇽', 'AR': '🇦🇷', 'CL': '🇨🇱', 'CO': '🇨🇴', 
+            'PE': '🇵🇪', 'UY': '🇺🇾', 'AU': '🇦🇺', 'ZA': '🇿🇦', 'NZ': '🇳🇿'
+        };
+
+        function renderEquipment(equip) {
+            const container = document.getElementById('equipmentDeck');
+            container.innerHTML = equip.map(e => {
+                const flag = countryFlags[e.country] || '';
+                
+                return `
+                    <div class="card" id="card-${e.id}">
+                        <div class="card-header">
+                            <div class="card-title-row">
+                                <div class="card-title">${flag} ${e.name}</div>
+                                <div class="card-cost">${e.cost}</div>
+                            </div>
+                        </div>
+                        <div class="card-image ${e.imagePath ? '' : 'hide-in-print'}" onclick="triggerUpload('${e.id}')">
+                            ${e.imagePath ? `<img src="${e.imagePath}">` : ''}
+                        </div>
+                        <div class="card-body">
+                            <div class="card-meta">${e.type}${e.firingType ? ' // ' + e.firingType : ''}</div>
+                            <div class="card-description">${e.rule}</div>
+                        </div>
+                        <div class="card-stats-bottom">${e.statLine}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function switchTab(type) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelector(`.tab-btn[onclick*="${type}"]`).classList.add('active');
+            
+            document.getElementById('rulesDeck').classList.add('hidden');
+            document.getElementById('equipmentDeck').classList.add('hidden');
+            document.getElementById('devicesDeck').classList.add('hidden');
+
+            if (type === 'rules') {
+                document.getElementById('rulesDeck').classList.remove('hidden');
+            } else if (type === 'equipment') {
+                document.getElementById('equipmentDeck').classList.remove('hidden');
+            } else if (type === 'devices') {
+                document.getElementById('devicesDeck').classList.remove('hidden');
+            }
+        }
+
+        function renderDevices(devices, equipment) {
+            const container = document.getElementById('devicesDeck');
+            const ammoTypes = {};
+            equipment.forEach(e => {
+                if (e.ammo && e.ammo !== '' && e.ammo !== 'N/A') {
+                    if (!ammoTypes[e.ammo]) {
+                        ammoTypes[e.ammo] = {
+                            name: e.ammo,
+                            imagePath: e.ammoImagePath || null,
+                            weapons: []
+                        };
+                    }
+                    ammoTypes[e.ammo].weapons.push(e.name);
+                }
+            });
+
+            container.innerHTML = devices.map(device => `
+                <div class="device-upload-section">
+                    <div class="device-upload-header">
+                        <i class="fas fa-rocket"></i> ${device.name}
+                    </div>
+                    
+                    <div class="device-specs-grid">
+                        <div class="device-spec-item">
+                            <div class="device-spec-label">Type:</div>
+                            <div class="device-spec-value">${device.type}</div>
+                        </div>
+                        <div class="device-spec-item">
+                            <div class="device-spec-label">Trajectory:</div>
+                            <div class="device-spec-value">${device.trajectory}</div>
+                        </div>
+                        <div class="device-spec-item">
+                            <div class="device-spec-label">Description:</div>
+                            <div class="device-spec-value">${device.description}</div>
+                        </div>
+                        <div class="device-spec-item">
+                            <div class="device-spec-label">Weapons Using:</div>
+                            <div class="device-spec-value">${device.weaponsUsing.length} weapons</div>
+                        </div>
+                    </div>
+
+                    <div class="device-images-grid">
+                        <div class="device-image-upload ${device.imagePath ? '' : 'hide-in-print'}">
+                            <div class="device-image-label">
+                                <i class="fas fa-camera"></i> Device Image (800x600px)
+                            </div>
+                            <div class="device-image-box" onclick="triggerDeviceUpload('${device.id}', 'main')">
+                                ${device.imagePath ? `
+                                    <img src="${device.imagePath}" alt="${device.name}">
+                                ` : `
+                                    <div class="device-image-placeholder">
+                                        <i class="fas fa-image"></i>
+                                        <span>Click to Upload Device Image</span>
+                                        <span style="font-size: 0.7rem; color: #bbb;">Recommended: 800x600px</span>
+                                    </div>
+                                `}
+                            </div>
+                        </div>
+                    </div>
+
+                    ${device.ammoTypes && device.ammoTypes.length > 0 ? `
+                        <div style="margin-top: 30px;">
+                            <div class="device-image-label" style="margin-bottom: 15px;">
+                                <i class="fas fa-bullseye"></i> Compatible Ammunition Images (200x200px)
+                            </div>
+                            <div class="ammo-list">
+                                ${device.ammoTypes.map(ammoType => {
+                                    const ammoData = ammoTypes[ammoType];
+                                    return `
+                                        <div class="ammo-item">
+                                            <div class="ammo-image-small ${ammoData && ammoData.imagePath ? '' : 'hide-in-print'}" onclick="triggerAmmoUpload('${ammoType}')">
+                                                ${ammoData && ammoData.imagePath ? `
+                                                    <img src="${ammoData.imagePath}" alt="${ammoType}">
+                                                ` : `
+                                                    <i class="fas fa-upload"></i>
+                                                `}
+                                            </div>
+                                            <div class="ammo-name">${ammoType}</div>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        let activeUploadType = null; 
+        let activeDeviceId = null;
+        let activeAmmoType = null;
+
+        function triggerDeviceUpload(deviceId, type) {
+            activeUploadType = type === 'main' ? 'device-main' : 'device-icon';
+            activeDeviceId = deviceId;
+            activeUploadTarget = null;
+            activeAmmoType = null;
+            document.getElementById('uploadTrigger').click();
+        }
+
+        function triggerAmmoUpload(ammoType) {
+            activeUploadType = 'ammo';
+            activeAmmoType = ammoType;
+            activeUploadTarget = null;
+            activeDeviceId = null;
+            document.getElementById('uploadTrigger').click();
+        }
+
+        function triggerUpload(id) {
+            activeUploadTarget = id;
+            document.getElementById('uploadTrigger').click();
+        }
+
+        document.getElementById('uploadTrigger').addEventListener('change', async (e) => {
+            if (!e.target.files[0]) return;
+
+            const formData = new FormData();
+            formData.append('image', e.target.files[0]);
+
+            if (activeUploadType === 'device-main' || activeUploadType === 'device-icon') {
+                formData.append('uploadType', activeUploadType);
+                formData.append('deviceId', activeDeviceId);
+            } else if (activeUploadType === 'ammo') {
+                formData.append('uploadType', 'ammo');
+                formData.append('ammoType', activeAmmoType);
+            } else if (activeUploadTarget) {
+                formData.append('id', activeUploadTarget);
+            }
+
+            try {
+                const res = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+        
+                const data = await res.json();
+
+                if (data.imagePath) {
+                    if (activeUploadType === 'device-main' || activeUploadType === 'device-icon' || activeUploadType === 'ammo') {
+                        const devicesRes = await fetch('/data/devices.json');
+                        const devices = await devicesRes.json();
+                        const equipRes = await fetch('/data/equipment.json');
+                        const equip = await equipRes.json();
+                        renderDevices(devices, equip);
+                    } else {
+                        const rulesVisible = !document.getElementById('rulesDeck').classList.contains('hidden');
+                        const equipVisible = !document.getElementById('equipmentDeck').classList.contains('hidden');
+
+                        if (rulesVisible) {
+                            const rulesRes = await fetch('/data/rules.json');
+                            const rules = await rulesRes.json();
+                            renderRules(rules);
+                        } else if (equipVisible) {
+                            const cardImg = document.querySelector(`#card-${activeUploadTarget} .card-image`);
+                            if (cardImg) cardImg.innerHTML = `<img src="${data.imagePath}">`;
+                            const equipRes = await fetch('/data/equipment.json');
+                            const equip = await equipRes.json();
+                            renderEquipment(equip);
+                        }
+                    }
+                } else {
+                    console.error("Server did not return an image path.");
+                }
+            } catch (error) {
+                console.error("Upload failed:", error);
+            }
+            
+            e.target.value = '';
+            activeUploadTarget = null;
+            activeUploadType = null;
+            activeDeviceId = null;
+            activeAmmoType = null;
+        });
+
+        loadDecks();
+    </script>
+</body>
+</html>

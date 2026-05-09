@@ -1,0 +1,17 @@
+[
+  { "id": "pk_2", "name": "⚡ OVERCLOCK", "desc": "🎯 Once per match: Gain +2 AP this turn (4 AP total). Choose which mech uses the extra AP. Flip card after use." },
+  { "id": "pk_3", "name": "🔧 SCAVENGE MASTER", "desc": "🎯 Once per match: One of your mechs can SCAVENGE for 0 AP this turn (pick up all HP tokens touching its base). Flip card after use." },
+  { "id": "pk_4", "name": "🚀 JUMP JETS", "desc": "🎯 Once per match: One of your mechs can MOVE 1 Short Ruler in any direction, ignoring terrain and height (up to 10cm). Costs 0 AP. Flip card after use." },
+  { "id": "pk_5", "name": "🎯 PRECISION AIM", "desc": "🎯 Once per match: When one of your mechs uses a Crossbow weapon, you may re-fire if you miss. Flip card after use." },
+  { "id": "pk_6", "name": "🛡️ REACTIVE ARMOR", "desc": "🎯 Once per match: When one of your mechs takes damage, place 1 HP token within 5cm of the attacker. If it touches them, they take 1 DP. Flip card after use." },
+  { "id": "pk_8", "name": "⚙️ STABILIZER LEGS", "desc": "🎯 Once per match: If one of your mechs would fall over from a hit or knockback, it stays upright instead. Flip card after use." },
+  { "id": "pk_10", "name": "💨 POWER SLIDE", "desc": "🎯 Once per match: One of your mechs can MOVE twice in one turn (2 AP), and the second move covers 2 Rulers instead of 1. Flip card after use." },
+  { "id": "pk_16", "name": "🏰 HEAVY PLATING", "desc": "🎯 Once per match: One of your mechs ignores all damage from one hit. Flip card after use." },
+  { "id": "pk_18", "name": "🔄 PIVOT MASTER", "desc": "🎯 Once per match: One of your mechs can REPOSITION for 0 AP, up to 3 times this turn. Flip card after use." },
+  { "id": "pk_20", "name": "💀 LAST STAND", "desc": "🎯 Once per match: When one of your mechs' Core is destroyed, it can take one final ENGAGE action before being removed. Flip card after use." },
+  { "id": "pk_21", "name": "🤝 COORDINATED STRIKE", "desc": "🎯 Once per match (Multi-Mech): If you control 2 mechs and both can see the same target, they both gain +1 DP on their next attack this turn. Flip card after use." },
+  { "id": "pk_22", "name": "📡 TACTICAL RELAY", "desc": "🎯 Once per match (Multi-Mech): If you control 2 mechs, gain +2 AP this turn (4 AP total). You must spend at least 1 AP on each mech. Flip card after use." },
+  { "id": "pk_23", "name": "🔫 COVERING FIRE", "desc": "🎯 Once per match (Multi-Mech): If you control 2 mechs and one is hit, your other mech can immediately make a free ENGAGE action against the attacker (if in range). Flip card after use." },
+  { "id": "pk_24", "name": "🏃 EMERGENCY REGROUP", "desc": "🎯 Once per match (Multi-Mech): If you control 2 mechs, both can MOVE toward each other for 0 AP. Flip card after use." },
+  { "id": "pk_25", "name": "💥 SYNCHRONIZED ASSAULT", "desc": "🎯 Once per match (Multi-Mech): If you control 2 mechs, both can ENGAGE the same target this turn. If both hit, deal +2 DP total. Flip card after use." }
+]

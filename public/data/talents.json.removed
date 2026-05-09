@@ -1,0 +1,52 @@
+[
+  {
+    "id": "pk_2",
+    "name": "<i class=\"fas fa-bolt\"></i> OVERCLOCK",
+    "desc": "<i class=\"fas fa-bullseye\"></i> Once per match: Gain +2 AP this turn (4 AP total). Flip card after use."
+  },
+  {
+    "id": "pk_3",
+    "name": "<i class=\"fas fa-wrench\"></i> SCAVENGE MASTER",
+    "desc": "<i class=\"fas fa-bullseye\"></i> Once per match: SCAVENGE for 0 AP this turn. Flip card after use."
+  },
+  {
+    "id": "pk_4",
+    "name": "<i class=\"fas fa-rocket\"></i> JUMP JETS",
+    "desc": "<i class=\"fas fa-bullseye\"></i> Once per match: MOVE 1 Short Ruler in any direction, ignoring terrain and height (up to 10cm). Costs 0 AP. Flip card after use."
+  },
+  {
+    "id": "pk_5",
+    "name": "<i class=\"fas fa-bullseye\"></i> PRECISION AIM",
+    "desc": "<i class=\"fas fa-bullseye\"></i> Once per match: When using a Crossbow weapon, you may re-fire if you miss. Flip card after use."
+  },
+  {
+    "id": "pk_6",
+    "name": "<i class=\"fas fa-shield\"></i> REACTIVE ARMOR",
+    "desc": "<i class=\"fas fa-bullseye\"></i> Once per match: When you take damage, place 1 HP token within 5cm of the attacker. If it touches them, they take 1 DP. Flip card after use."
+  },
+  {
+    "id": "pk_8",
+    "name": "<i class=\"fas fa-gear\"></i> STABILIZER LEGS",
+    "desc": "<i class=\"fas fa-bullseye\"></i> Once per match: If your mech would fall over from a hit or knockback, it stays upright instead. Flip card after use."
+  },
+  {
+    "id": "pk_10",
+    "name": "<i class=\"fas fa-wind\"></i> POWER SLIDE",
+    "desc": "<i class=\"fas fa-bullseye\"></i> Once per match: MOVE twice in one turn (2 AP), and the second move covers 2 Rulers instead of 1. Flip card after use."
+  },
+  {
+    "id": "pk_16",
+    "name": "<i class=\"fas fa-building\"></i> HEAVY PLATING",
+    "desc": "<i class=\"fas fa-bullseye\"></i> Once per match: Ignore all damage from one hit. Flip card after use."
+  },
+  {
+    "id": "pk_18",
+    "name": "<i class=\"fas fa-rotate\"></i> PIVOT MASTER",
+    "desc": "<i class=\"fas fa-bullseye\"></i> Once per match: You can REPOSITION up to 3 times this turn (still free, 0 AP). Flip card after use."
+  },
+  {
+    "id": "pk_20",
+    "name": "<i class=\"fas fa-skull\"></i> LAST STAND",
+    "desc": "<i class=\"fas fa-bullseye\"></i> Once per match: When your Core is destroyed, you can take one final ENGAGE action before being removed. Flip card after use."
+  }
+]
