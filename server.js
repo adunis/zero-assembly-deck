@@ -27,6 +27,8 @@ if (!fs.existsSync(devicesIconsDir)) {
 
 // 2. Tell Express to serve your index.html, CSS, and JSON files from the 'public' folder
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // 3. Set up Multer to keep your exact screenshot filenames
 const storage = multer.diskStorage({
@@ -135,6 +137,22 @@ app.post('/upload', upload.single('image'), (req, res) => {
     }
 
     res.json({ success: true, imagePath: newImagePath });
+});
+
+// Save equipment endpoint
+app.post('/save-equipment', upload.none(), (req, res) => {
+    try {
+        const equipmentData = JSON.parse(req.body.equipment);
+        const equipPath = path.join(__dirname, 'public', 'data', 'equipment.json');
+        
+        fs.writeFileSync(equipPath, equipmentData);
+        console.log('[EQUIPMENT] Saved equipment.json');
+        
+        res.json({ success: true });
+    } catch (error) {
+        console.error('[EQUIPMENT] Error saving:', error);
+        res.status(500).json({ success: false, error: error.message });
+    }
 });
 
 // 5. Start the server

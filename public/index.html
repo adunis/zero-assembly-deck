@@ -980,6 +980,95 @@
 
     <input type="file" id="uploadTrigger" accept="image/*">
 
+    <!-- Edit Equipment Modal -->
+    <div id="editModal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
+        <div style="background-color: white; margin: 5% auto; padding: 30px; border: 2px solid var(--text-main); width: 80%; max-width: 600px; font-family: var(--font-mono);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="margin: 0; font-size: 1.5rem;">EDIT EQUIPMENT</h2>
+                <button onclick="closeEditModal()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">&times;</button>
+            </div>
+            
+            <div style="display: flex; flex-direction: column; gap: 15px;">
+                <input type="hidden" id="editId">
+                
+                <div>
+                    <label style="display: block; margin-bottom: 5px; font-weight: 700;">Name:</label>
+                    <input type="text" id="editName" style="width: 100%; padding: 8px; font-family: var(--font-mono); border: 1px solid #ccc;">
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div>
+                        <label style="display: block; margin-bottom: 5px; font-weight: 700;">Type:</label>
+                        <select id="editType" style="width: 100%; padding: 8px; font-family: var(--font-mono); border: 1px solid #ccc;">
+                            <option>Weapon</option>
+                            <option>Armor</option>
+                            <option>Equipment</option>
+                            <option>Shield</option>
+                            <option>Countermeasure</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label style="display: block; margin-bottom: 5px; font-weight: 700;">Cost:</label>
+                        <input type="text" id="editCost" style="width: 100%; padding: 8px; font-family: var(--font-mono); border: 1px solid #ccc;">
+                    </div>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <div>
+                        <label style="display: block; margin-bottom: 5px; font-weight: 700;">Country:</label>
+                        <select id="editCountry" style="width: 100%; padding: 8px; font-family: var(--font-mono); border: 1px solid #ccc;">
+                            <option value="US">🇺🇸 USA</option>
+                            <option value="EU">🇪🇺 Europe</option>
+                            <option value="CN">🇨🇳 China</option>
+                            <option value="JP">🇯🇵 Japan</option>
+                            <option value="KR">🇰🇷 Korea</option>
+                            <option value="IN">🇮🇳 India</option>
+                            <option value="BR">🇧🇷 Brazil</option>
+                            <option value="AU">🇦🇺 Australia</option>
+                            <option value="ZA">🇿🇦 South Africa</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label style="display: block; margin-bottom: 5px; font-weight: 700;">Firing Type:</label>
+                        <select id="editFiringType" style="width: 100%; padding: 8px; font-family: var(--font-mono); border: 1px solid #ccc;">
+                            <option value="">None</option>
+                            <option>Direct Fire</option>
+                            <option>Indirect Fire</option>
+                            <option>Lock-On</option>
+                            <option>Melee</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div>
+                    <label style="display: block; margin-bottom: 5px; font-weight: 700;">Rule:</label>
+                    <textarea id="editRule" rows="4" style="width: 100%; padding: 8px; font-family: var(--font-mono); border: 1px solid #ccc;"></textarea>
+                </div>
+                
+                <div>
+                    <label style="display: block; margin-bottom: 5px; font-weight: 700;">Stat Line:</label>
+                    <input type="text" id="editStatLine" placeholder="e.g., 🎯 2 DP • 📏 30cm • 🔥 Multi-Shot 2" style="width: 100%; padding: 8px; font-family: var(--font-mono); border: 1px solid #ccc;">
+                </div>
+                
+                <div>
+                    <label style="display: block; margin-bottom: 5px; font-weight: 700;">Ammo Type:</label>
+                    <input type="text" id="editAmmo" placeholder="e.g., Standard, AP, HE" style="width: 100%; padding: 8px; font-family: var(--font-mono); border: 1px solid #ccc;">
+                </div>
+                
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <button onclick="saveEdit()" style="flex: 1; padding: 12px; background: var(--accent-orange); color: white; border: none; cursor: pointer; font-family: var(--font-mono); font-weight: 700; font-size: 1rem;">
+                        <i class="fas fa-save"></i> SAVE
+                    </button>
+                    <button onclick="closeEditModal()" style="flex: 1; padding: 12px; background: #666; color: white; border: none; cursor: pointer; font-family: var(--font-mono); font-weight: 700; font-size: 1rem;">
+                        CANCEL
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         let activeUploadTarget = null;
 
@@ -1052,7 +1141,17 @@
 
         function renderEquipment(equip) {
             const container = document.getElementById('equipmentDeck');
-            container.innerHTML = equip.map(e => {
+            
+            // Add "Create New Equipment" button at the top
+            let html = `
+                <div style="margin-bottom: 30px; text-align: center;">
+                    <button onclick="createNewEquipment()" style="padding: 15px 30px; font-size: 1.1rem; background: var(--accent-orange); color: white; border: none; cursor: pointer; font-family: var(--font-mono); font-weight: 700;">
+                        <i class="fas fa-plus"></i> CREATE NEW EQUIPMENT
+                    </button>
+                </div>
+            `;
+            
+            html += equip.map(e => {
                 const flag = countryFlags[e.country] || '';
                 
                 return `
@@ -1061,6 +1160,14 @@
                             <div class="card-title-row">
                                 <div class="card-title">${flag} ${e.name}</div>
                                 <div class="card-cost">${e.cost}</div>
+                            </div>
+                            <div class="card-actions hide-in-print" style="display: flex; gap: 5px; margin-top: 5px;">
+                                <button onclick="editEquipment('${e.id}')" style="padding: 5px 10px; font-size: 0.7rem; background: #4CAF50; color: white; border: none; cursor: pointer; font-family: var(--font-mono);">
+                                    <i class="fas fa-edit"></i> EDIT
+                                </button>
+                                <button onclick="deleteEquipment('${e.id}')" style="padding: 5px 10px; font-size: 0.7rem; background: #f44336; color: white; border: none; cursor: pointer; font-family: var(--font-mono);">
+                                    <i class="fas fa-trash"></i> DELETE
+                                </button>
                             </div>
                         </div>
                         <div class="card-image ${e.imagePath ? '' : 'hide-in-print'}" onclick="triggerUpload('${e.id}')">
@@ -1074,6 +1181,8 @@
                     </div>
                 `;
             }).join('');
+            
+            container.innerHTML = html;
         }
 
         function switchTab(type) {
@@ -1268,6 +1377,124 @@
         });
 
         loadDecks();
+
+        // Equipment editing functions
+        let currentEquipmentData = [];
+
+        async function loadEquipmentData() {
+            const res = await fetch('/data/equipment.json');
+            currentEquipmentData = await res.json();
+            return currentEquipmentData;
+        }
+
+        async function saveEquipmentData() {
+            const formData = new FormData();
+            formData.append('equipment', JSON.stringify(currentEquipmentData, null, 2));
+            
+            const res = await fetch('/save-equipment', {
+                method: 'POST',
+                body: formData
+            });
+            
+            if (res.ok) {
+                alert('Equipment saved successfully!');
+                renderEquipment(currentEquipmentData);
+            } else {
+                alert('Error saving equipment');
+            }
+        }
+
+        async function editEquipment(id) {
+            await loadEquipmentData();
+            const equipment = currentEquipmentData.find(e => e.id === id);
+            if (!equipment) return;
+            
+            const modal = document.getElementById('editModal');
+            document.getElementById('editId').value = equipment.id;
+            document.getElementById('editName').value = equipment.name;
+            document.getElementById('editType').value = equipment.type;
+            document.getElementById('editCost').value = equipment.cost;
+            document.getElementById('editCountry').value = equipment.country;
+            document.getElementById('editFiringType').value = equipment.firingType || '';
+            document.getElementById('editRule').value = equipment.rule;
+            document.getElementById('editStatLine').value = equipment.statLine;
+            document.getElementById('editAmmo').value = equipment.ammo || '';
+            
+            modal.style.display = 'block';
+        }
+
+        async function deleteEquipment(id) {
+            if (!confirm('Are you sure you want to delete this equipment?')) return;
+            
+            await loadEquipmentData();
+            currentEquipmentData = currentEquipmentData.filter(e => e.id !== id);
+            await saveEquipmentData();
+        }
+
+        async function createNewEquipment() {
+            await loadEquipmentData();
+            
+            // Generate new ID
+            const maxId = Math.max(...currentEquipmentData.map(e => parseInt(e.id.replace('eq_', ''))));
+            const newId = `eq_${maxId + 1}`;
+            
+            const modal = document.getElementById('editModal');
+            document.getElementById('editId').value = newId;
+            document.getElementById('editName').value = '';
+            document.getElementById('editType').value = 'Weapon';
+            document.getElementById('editCost').value = '0';
+            document.getElementById('editCountry').value = 'US';
+            document.getElementById('editFiringType').value = '';
+            document.getElementById('editRule').value = '';
+            document.getElementById('editStatLine').value = '';
+            document.getElementById('editAmmo').value = '';
+            
+            modal.style.display = 'block';
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+
+        async function saveEdit() {
+            await loadEquipmentData();
+            
+            const id = document.getElementById('editId').value;
+            const equipmentData = {
+                id: id,
+                name: document.getElementById('editName').value,
+                type: document.getElementById('editType').value,
+                cost: document.getElementById('editCost').value,
+                country: document.getElementById('editCountry').value,
+                firingType: document.getElementById('editFiringType').value,
+                rule: document.getElementById('editRule').value,
+                statLine: document.getElementById('editStatLine').value,
+                ammo: document.getElementById('editAmmo').value,
+                imagePath: null,
+                ammoImagePath: null
+            };
+            
+            const existingIndex = currentEquipmentData.findIndex(e => e.id === id);
+            if (existingIndex >= 0) {
+                // Keep existing image paths
+                equipmentData.imagePath = currentEquipmentData[existingIndex].imagePath;
+                equipmentData.ammoImagePath = currentEquipmentData[existingIndex].ammoImagePath;
+                currentEquipmentData[existingIndex] = equipmentData;
+            } else {
+                currentEquipmentData.push(equipmentData);
+            }
+            
+            await saveEquipmentData();
+            closeEditModal();
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('editModal');
+            if (event.target == modal) {
+                closeEditModal();
+            }
+        }
     </script>
 </body>
 </html>
