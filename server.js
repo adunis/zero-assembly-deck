@@ -145,7 +145,8 @@ app.post('/save-equipment', upload.none(), (req, res) => {
         const equipmentData = JSON.parse(req.body.equipment);
         const equipPath = path.join(__dirname, 'public', 'data', 'equipment.json');
         
-        fs.writeFileSync(equipPath, equipmentData);
+        // Convert array back to JSON string with formatting
+        fs.writeFileSync(equipPath, JSON.stringify(equipmentData, null, 2));
         console.log('[EQUIPMENT] Saved equipment.json');
         
         res.json({ success: true });
